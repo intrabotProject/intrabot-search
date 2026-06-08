@@ -1,0 +1,11 @@
+.pytest_cache
+.venv/
+.env*
+chroma.log
+*.pyc
+venv/
+env/
+./intrabot-search-hexagonal/.pytest_cache
+./intrabot-search-hexagonal/.env
+docker*
+*.ini

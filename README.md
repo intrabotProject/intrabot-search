@@ -48,7 +48,7 @@ Ces variables doivent être définies dans le shell **avant** de démarrer l'ing
 ### 1. Se positionner dans le projet
 
 ```bash
-cd intrabot-search-final-clean
+cd intrabot-search-hexagonal
 ```
 
 ### 2. Créer et activer un environnement virtuel
@@ -122,7 +122,7 @@ Le résultat doit lister les fichiers indexés avec leur nombre de chunks. Si `C
 ### Terminal 3 — intrabot-search
 
 ```bash
-cd /chemin/vers/intrabot-search-final-clean
+cd /chemin/vers/intrabot-search-hexagonal
 source /chemin/vers/intrabot-search-final/.venv/bin/activate
 uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
 ```
@@ -177,7 +177,7 @@ curl http://localhost:8002/health
 
 ```bash
 # Depuis la racine du projet (là où se trouve pytest.ini)
-cd intrabot-search-final-clean
+cd intrabot-search-hexagonal
 pytest
 
 # Tests unitaires uniquement (sans dépendances externes)
@@ -190,7 +190,7 @@ pytest tests/integration/
 pytest --cov=app --cov-report=term-missing
 ```
 
-> **Important** : toujours lancer `pytest` depuis `intrabot-search-final-clean/`, jamais depuis le dossier parent. Lancer depuis le parent provoque une `ImportPathMismatchError` si plusieurs projets sont présents.
+> **Important** : toujours lancer `pytest` depuis `intrabot-search-hexagonal/`, jamais depuis le dossier parent. Lancer depuis le parent provoque une `ImportPathMismatchError` si plusieurs projets sont présents.
 
 ---
 
@@ -202,7 +202,7 @@ pytest --cov=app --cov-report=term-missing
 **Fix** : se placer à la racine du projet avant de lancer uvicorn.
 
 ```bash
-cd intrabot-search-final-clean
+cd intrabot-search-hexagonal
 uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
 ```
 
@@ -374,7 +374,7 @@ curl -X POST http://localhost:8002/api/v1/search \
 **Fix** : toujours lancer pytest depuis la racine du projet.
 
 ```bash
-cd intrabot-search-final-clean
+cd intrabot-search-hexagonal
 pytest
 ```
 

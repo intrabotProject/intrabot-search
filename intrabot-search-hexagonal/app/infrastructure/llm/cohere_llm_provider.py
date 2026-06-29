@@ -1,6 +1,7 @@
 import cohere
 
 from app.domain.interfaces.secondary.llm.llm_provider import ILLMProvider
+from app.application.prompt.rag_prompt_builder import SYSTEM_INSTRUCTION
 
 # command-r-plus is Cohere's RAG-optimised generation model
 COHERE_GENERATION_MODEL: str = "command-r-plus-08-2024"
@@ -23,7 +24,10 @@ class CohereLLMProvider(ILLMProvider):
     def generate_answer(self, augmented_prompt: str) -> str:
         response = self._client.chat(
             model=COHERE_GENERATION_MODEL,
-            messages=[{"role": "user", "content": augmented_prompt}],
+            messages=[
+                {"role": "system", "content": SYSTEM_INSTRUCTION},
+                {"role": "user", "content": augmented_prompt},
+            ],
         )
         generated_text: str = response.message.content[0].text
         return generated_text if generated_text is not None else ""

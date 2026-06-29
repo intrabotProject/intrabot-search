@@ -2,10 +2,9 @@ import numpy as np
 import pytest
 import chromadb
 
-from app.infrastructure.vector_store.chroma_vector_store import (
-    ChromaVectorStore,
-    CHROMA_COLLECTION_NAME,
-)
+from app.infrastructure.vector_store.chroma_vector_store import ChromaVectorStore
+
+COLLECTION_NAME = "intrabot"
 from tests.fixtures.documents import (
     ALL_CHUNK_FIXTURES, CHUNK_CI_CD_PIPELINE, CHUNK_TELEWORK_POLICY,
 )
@@ -19,14 +18,14 @@ from tests.fixtures.embeddings import (
 def populated_vector_store() -> ChromaVectorStore:
     client = chromadb.EphemeralClient()
     try:
-        client.delete_collection(CHROMA_COLLECTION_NAME)
+        client.delete_collection(COLLECTION_NAME)
     except Exception:
         pass
     client.create_collection(
-        name=CHROMA_COLLECTION_NAME,
+        name=COLLECTION_NAME,
         metadata={"hnsw:space": "cosine"},
     )
-    store = ChromaVectorStore(chroma_client=client)
+    store = ChromaVectorStore(chroma_client=client, collection_name=COLLECTION_NAME)
     store._collection.add(
         ids=[f.chunk_id for f in ALL_CHUNK_FIXTURES],
         embeddings=ALL_CHUNK_EMBEDDINGS,
@@ -40,14 +39,14 @@ def populated_vector_store() -> ChromaVectorStore:
 def empty_vector_store() -> ChromaVectorStore:
     client = chromadb.EphemeralClient()
     try:
-        client.delete_collection(CHROMA_COLLECTION_NAME)
+        client.delete_collection(COLLECTION_NAME)
     except Exception:
         pass
     client.create_collection(
-        name=CHROMA_COLLECTION_NAME,
+        name=COLLECTION_NAME,
         metadata={"hnsw:space": "cosine"},
     )
-    return ChromaVectorStore(chroma_client=client)
+    return ChromaVectorStore(chroma_client=client, collection_name=COLLECTION_NAME)
 
 class TestChromaVectorStore:
 

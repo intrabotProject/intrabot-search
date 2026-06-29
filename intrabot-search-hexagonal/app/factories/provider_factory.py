@@ -1,4 +1,4 @@
-from functools import lru_cache
+"""Composition root — câblage des adaptateurs du service search."""
 
 import chromadb
 
@@ -17,27 +17,21 @@ def _get_chroma_client() -> chromadb.ClientAPI:
     settings = get_settings()
     return chromadb.PersistentClient(path=settings.chroma_path)
 
+
 def get_search_service() -> ISearchService:
     """
-    Composition root — wires the hexagon:
-
-    Primary adapter (FastAPI endpoint)
-        → ISearchService (primary port)
-            → RAGSearchService
-                → IngestionServiceEmbeddingAdapter  (calls intrabot-ingestion /embed)
-                → ChromaVectorStore                 (shared ChromaDB instance)
-                → CohereLLMProvider                 (command-r-plus)
-                → RAGPromptBuilder                  (hallucination guardrail)
-
-    To swap the LLM: replace CohereLLMProvider with any ILLMProvider implementation.
-    To swap the embedder: replace IngestionServiceEmbeddingAdapter with any IEmbeddingProvider.
+    Assemble le pipeline RAG :
+      embed (via ingestion) → ChromaDB → prompt → LLM Cohere
     """
     settings = get_settings()
     return RAGSearchService(
         embedding_provider=IngestionServiceEmbeddingAdapter(
             ingestion_service_url=settings.ingestion_service_url,
         ),
-        vector_store=ChromaVectorStore(chroma_client=_get_chroma_client()),
+        vector_store=ChromaVectorStore(
+            chroma_client=_get_chroma_client(),
+            collection_name=settings.chroma_collection_name,
+        ),
         llm_provider=CohereLLMProvider(api_key=settings.cohere_api_key),
         prompt_builder=RAGPromptBuilder(),
     )

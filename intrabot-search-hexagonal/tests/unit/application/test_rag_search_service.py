@@ -90,7 +90,10 @@ class TestRAGSearchService:
 
         self._service.search(SearchRequest(question="Question", top_k=3))
         self._mock_vector_store.query_similar_chunks.assert_called_once_with(
-            query_embedding=QUERY_EMBEDDING_TELEWORK, top_k=3,
+            query_embedding=QUERY_EMBEDDING_TELEWORK,
+            top_k=3,
+            source_filter=None,
+            allowed_categories=None,
         )
 
     def test_sources_count_matches_retrieved_chunks_count(self) -> None:

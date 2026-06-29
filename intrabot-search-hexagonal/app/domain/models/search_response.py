@@ -26,4 +26,8 @@ class SearchResponse(BaseModel):
 
     answer: str
     sources: list[SourceChunk]
+    excluded_by_threshold: list[SourceChunk] = Field(
+        default_factory=list,
+        description="Chunks retrieved but below min_score — not sent to the LLM.",
+    )
     latency_ms: int = Field(..., ge=0, description="End-to-end processing time in milliseconds.")

@@ -2,15 +2,17 @@ from app.domain.interfaces.secondary.prompt.prompt_builder import IPromptBuilder
 from app.domain.models.retrieved_chunk import RetrievedChunk
 
 SYSTEM_INSTRUCTION: str = (
-    "You are an intranet assistant.\n"
-    "Answer the question ONLY based on the documents provided below.\n"
-    "If the answer cannot be found in the documents, reply exactly:\n"
-    '  "I cannot find the answer to this question in the available documents."\n'
-    "Answer in the same language as the question.\n"
-    "Be concise and cite the source filename for every claim.\n"
+    "Tu es un assistant intranet d'entreprise.\n"
+    "Réponds UNIQUEMENT à partir des documents fournis ci-dessous.\n"
+    "Si la réponse ne figure pas dans les documents, réponds exactement :\n"
+    '  "Je ne trouve pas la réponse à cette question dans les documents disponibles."\n'
+    "Réponds toujours en français.\n"
+    "Sois concis et cite le nom du fichier source pour chaque affirmation.\n"
 )
 
-NO_CONTEXT_DOCUMENTS_PLACEHOLDER: str = "DOCUMENTS: (none — no relevant document was retrieved)"
+NO_CONTEXT_DOCUMENTS_PLACEHOLDER: str = (
+    "DOCUMENTS : (aucun — aucun passage pertinent n'a été retrouvé)"
+)
 
 
 class RAGPromptBuilder(IPromptBuilder):
@@ -40,4 +42,4 @@ class RAGPromptBuilder(IPromptBuilder):
             f"[Source: {chunk.document_filename} — chunk {chunk.chunk_index}]\n{chunk.content}"
             for chunk in retrieved_chunks
         ]
-        return "DOCUMENTS:\n" + "\n\n".join(formatted_chunks)
+        return "DOCUMENTS :\n" + "\n\n".join(formatted_chunks)

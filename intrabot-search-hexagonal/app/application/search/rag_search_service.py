@@ -41,10 +41,26 @@ class RAGSearchService(ISearchService):
 
         query_embedding: list[float] = self._embedding_provider.embed_text(request.question)
 
-        retrieved_chunks: list[RetrievedChunk] = self._vector_store.query_similar_chunks(
-            query_embedding=query_embedding,
-            top_k=request.top_k,
-        )
+        if request.allowed_categories is not None and not request.allowed_categories:
+            all_chunks: list[RetrievedChunk] = []
+        else:
+            all_chunks = self._vector_store.query_similar_chunks(
+                query_embedding=query_embedding,
+                top_k=request.top_k,
+                source_filter=request.source_filter,
+                allowed_categories=request.allowed_categories,
+            )
+
+        retrieved_chunks = [
+            chunk
+            for chunk in all_chunks
+            if chunk.similarity_score >= request.min_score
+        ]
+        excluded_chunks = [
+            chunk
+            for chunk in all_chunks
+            if chunk.similarity_score < request.min_score
+        ]
 
         augmented_prompt: str = self._prompt_builder.build_rag_prompt(
             user_question=request.question,
@@ -58,6 +74,9 @@ class RAGSearchService(ISearchService):
         return SearchResponse(
             answer=generated_answer,
             sources=self._map_retrieved_chunks_to_source_chunks(retrieved_chunks),
+            excluded_by_threshold=self._map_retrieved_chunks_to_source_chunks(
+                excluded_chunks
+            ),
             latency_ms=elapsed_ms,
         )
 

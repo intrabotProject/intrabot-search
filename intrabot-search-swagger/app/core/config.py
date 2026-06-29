@@ -11,9 +11,7 @@ class Settings(BaseSettings):
     ingestion_service_url: str = "http://localhost:8000"
 
     # ChromaDB — must point to the same instance as intrabot-ingestion
-    chroma_host: str = "localhost"
-    chroma_port: int = 8003
-
+    chroma_path: str = "/Users/ameiri/Downloads/Projet tnsi/intrabot-ingestion/data/chroma"
     # Service bind
     app_host: str = "0.0.0.0"
     app_port: int = 8002

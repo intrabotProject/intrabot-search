@@ -1,10 +1,12 @@
 .pytest_cache
 .venv/
-.env*
+.env
+.env.local
 chroma.log
 *.pyc
 venv/
 env/
+.DS_Store
 ./intrabot-search-hexagonal/.pytest_cache
 ./intrabot-search-hexagonal/.env
 docker*

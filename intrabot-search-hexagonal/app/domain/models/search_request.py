@@ -19,6 +19,20 @@ class SearchRequest(BaseModel):
         le=20,
         description="Number of document chunks to retrieve from the vector store.",
     )
+    source_filter: str | None = Field(
+        default=None,
+        description="If set, restrict retrieval to chunks from this document filename.",
+    )
+    min_score: float = Field(
+        default=0.35,
+        ge=0.0,
+        le=1.0,
+        description="Minimum cosine similarity score for a chunk to be used.",
+    )
+    allowed_categories: list[str] | None = Field(
+        default=None,
+        description="If set, restrict retrieval to chunks in these access categories.",
+    )
 
     @field_validator("question")
     @classmethod
